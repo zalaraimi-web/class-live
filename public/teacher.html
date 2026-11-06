@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Class Live · Teacher Board</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+<link rel="stylesheet" href="/common.css">
+<style>
+  body{min-height:100vh;display:flex;flex-direction:column;font-size:clamp(15px,1.15vw,22px)}
+  body{--footer:64px}
+  header.top,main,footer.bar{position:relative;z-index:1}
+  header.top{display:flex;align-items:center;gap:1rem;padding:.7rem 1.5rem .4rem}
+  .logo{display:flex;align-items:center;gap:.1em;font-size:2.1rem;line-height:1;padding-bottom:.15em}
+  .logo .k1{color:var(--ink)} .logo .k2{color:#d0a93a;text-shadow:0 2px 0 var(--gold-deep)}
+  .logo .crownmini{width:1.5em;margin-right:.1em}
+  .top .mid{flex:1;text-align:center;font-family:var(--hand);font-weight:700;font-size:1.5rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .top .signature{margin-left:.4rem;font-size:1rem}
+  .live{display:inline-flex;align-items:center;gap:.4em;font-weight:800;color:var(--ink);font-size:.9rem;background:var(--card);border:2px solid var(--ink);border-radius:999px;padding:.1em .7em}
+  .live i{width:.6em;height:.6em;border-radius:50%;background:var(--live);animation:ping 1.8s infinite}
+  .live.off i{background:var(--gold);animation:none}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(31,157,99,.55)}100%{box-shadow:0 0 0 10px rgba(31,157,99,0)}}
+  .minipin{font-weight:800;background:var(--gold-grad);color:var(--ink);border:2px solid var(--gold-deep);border-radius:12px;padding:.1em .7em;font-size:1.1rem;letter-spacing:.06em;box-shadow:0 3px 0 var(--gold-deep)}
+  main{flex:1;display:flex;flex-direction:column;padding:0 1.5rem 1rem;min-height:0}
+  footer.bar{display:flex;align-items:center;gap:.7rem;padding:.7rem 1.5rem;background:rgba(255,253,247,.85);border-top:2px dashed rgba(19,37,79,.25);flex-wrap:wrap;backdrop-filter:blur(4px)}
+  footer.bar .grow{flex:1}
+  footer .hint{color:var(--muted);font-size:.8rem;font-weight:600}
+  kbd{font-family:inherit;background:var(--card);border:1.5px solid var(--ink);border-radius:6px;padding:0 .4em;font-size:.85em;font-weight:800}
+
+  /* ---------- setup ---------- */
+  .setup{max-width:1180px;margin:0 auto;width:100%;padding-bottom:1rem}
+  .hero{display:flex;flex-direction:column;align-items:center;text-align:center;margin:.2rem 0 1.4rem;position:relative}
+  .hero .crown{width:clamp(80px,7vw,130px);margin-bottom:-.6rem;animation:sway 4s ease-in-out infinite;transform-origin:50% 100%}
+  .hero .title3d{font-size:clamp(4rem,8vw,8.6rem);margin-bottom:.12em}
+  .hero .brush{font-size:clamp(.95rem,1.2vw,1.25rem);margin-top:.9rem}
+  .hero .highlight{font-size:clamp(1.15rem,1.5vw,1.7rem);margin-top:.9rem;letter-spacing:.02em}
+  .hero .highlight b{margin:0 .45em;font-weight:700;opacity:.55}
+  .sechead{display:flex;align-items:center;gap:.6rem;margin:1.2rem 0 1.6rem;font-family:var(--hand);font-style:italic;font-weight:700;font-size:1.9rem;color:var(--ink)}
+  .sechead .marker{padding:0 .3em}
+  .quizgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:2.2rem 1.4rem;padding-top:.6rem}
+  .quiz{position:relative;text-align:center;padding:1.6rem 1rem 2.4rem;min-height:170px;display:flex;flex-direction:column;align-items:center;gap:.3rem;transition:transform .2s, box-shadow .2s;color:var(--ink)}
+  .quiz:nth-child(5n+1){background-color:var(--n-pink);transform:rotate(-1.5deg)}
+  .quiz:nth-child(5n+2){background-color:var(--n-blue);transform:rotate(1deg)}
+  .quiz:nth-child(5n+3){background-color:var(--n-yellow);transform:rotate(-.6deg)}
+  .quiz:nth-child(5n+4){background-color:var(--n-green);transform:rotate(1.4deg)}
+  .quiz:nth-child(5n+5){background-color:var(--n-lilac);transform:rotate(-1deg)}
+  .quiz:hover{transform:translateY(-6px) rotate(0)}
+  .quiz.sel{transform:translateY(-6px) rotate(0) scale(1.03);box-shadow:0 0 0 4px var(--gold),0 0 0 7px #fff,0 18px 30px -6px rgba(92,70,30,.45)}
+  .quiz .kicker{font-weight:800;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+  .quiz .t{font-weight:800;font-size:1.35rem;line-height:1.15}
+  .quiz .ppl{width:60%;margin:.3rem 0 .1rem}
+  .quiz .n{font-weight:800;font-size:.95rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz .ic{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);width:42px;height:42px;background:#fff;border-radius:50%;padding:6px;box-shadow:0 4px 8px rgba(0,0,0,.15)}
+  .quiz .edit{position:absolute;right:.6rem;top:.4rem;font-size:.85rem;font-weight:700;color:var(--ink);text-decoration:underline;opacity:.7}
+  .quiz.new{background:transparent!important;border:3px dashed rgba(19,37,79,.35);box-shadow:none;justify-content:center;font-family:var(--hand);font-size:1.6rem;font-weight:700}
+  .quiz.new span{font-size:2.6rem;line-height:1;font-family:var(--display)}
+  .quiz.new::before{display:none}
+  .setgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:2rem;margin-top:2.4rem;align-items:start}
+  .notebook.opts{padding:1.3rem 1.6rem 1.4rem 4.2rem}
+  .notebook h3{font-family:var(--hand);font-style:italic;font-size:1.9rem;line-height:1.1;margin-bottom:.8rem}
+  .opt{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;align-items:center;padding:.55rem 0}
+  .opt .num{grid-row:span 2;width:2.3rem;height:2.3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:1.3rem;color:#fff}
+  .opt:nth-of-type(1) .num{background:#ef7fa5}.opt:nth-of-type(2) .num{background:#5aa9ec}.opt:nth-of-type(3) .num{background:#e8b730}
+  .opt label.h{font-weight:800;font-size:1.05rem}
+  .seg{display:inline-flex;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:3px;justify-self:start}
+  .seg button{padding:.25em 1em;border-radius:999px;font-weight:700;color:var(--muted)}
+  .seg button.on{background:var(--ink);color:#fff}
+  .gocard{background:var(--card);padding:1.6rem 1.4rem;text-align:center;border-top:4px solid var(--ink);display:flex;flex-direction:column;gap:1rem;align-items:center}
+  .gocard h3{font-family:var(--hand);font-style:italic;font-size:1.7rem;line-height:1.1}
+  .gocard ol{list-style:none;text-align:left;display:flex;flex-direction:column;gap:.45rem;font-weight:600}
+  .gocard ol li::before{content:'☑ ';color:var(--ink);font-weight:800}
+  .bigcta{font-size:1.5rem;padding:.65em 2em}
+  .login{max-width:560px;margin:0 auto;width:100%}
+  .logincard{display:flex;flex-direction:column;gap:.7rem;padding:1.6rem 1.8rem;border-top:4px solid var(--ink)}
+  .logincard label{font-weight:800}
+  .logincard input{font-size:1.3rem;padding:.6em .8em;border:2.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink)}
+  .logincard input:focus{outline:none;border-color:var(--gold-deep);box-shadow:0 0 0 4px rgba(212,175,55,.35)}
+  .lerr{color:var(--bad);font-weight:700;min-height:1.4em}
+  .lnote{color:var(--muted);font-size:.95rem;margin:0}
+
+  /* ---------- editor ---------- */
+  .modal{position:fixed;inset:0;background:rgba(19,37,79,.35);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
+  .sheet{background:var(--card);border-radius:14px;width:min(1100px,100%);max-height:94vh;display:flex;flex-direction:column;box-shadow:var(--lift);border-top:10px solid var(--ink)}
+  .sheet header{display:flex;align-items:center;gap:1rem;padding:1rem 1.3rem;border-bottom:2px dashed var(--line)}
+  .sheet header h2{flex:1;font-family:var(--hand);font-size:2rem}
+  .sheet .body{display:grid;grid-template-columns:1.2fr 1fr;gap:1rem;padding:1rem 1.3rem;overflow:auto;min-height:0}
+  .sheet textarea{width:100%;min-height:52vh;resize:vertical;color:var(--ink);border:2px solid var(--ink);border-radius:10px;padding:.6rem 1rem;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;line-height:28px;
+    background:#fff repeating-linear-gradient(180deg,transparent 0 26px,var(--lined) 26px 28px);background-attachment:local}
+  .help{color:var(--muted);font-size:.92rem;line-height:1.5}
+  .help b{color:var(--ink)}
+  .help pre{background:var(--n-yellow);padding:.8rem;border-radius:4px 4px 12px 4px;color:var(--ink);font-size:.85rem;white-space:pre-wrap;margin:.5rem 0;box-shadow:var(--shadow);transform:rotate(-.6deg)}
+  .preview{margin-top:.8rem;padding:.8rem;border-radius:10px;background:var(--paper);font-size:.92rem;max-height:30vh;overflow:auto;color:var(--ink)}
+  .preview .err{color:var(--bad);font-weight:700}
+  .preview .ok{color:var(--good);font-weight:800}
+  .sheet footer{display:flex;gap:.7rem;justify-content:flex-end;padding:1rem 1.3rem;border-top:2px dashed var(--line)}
+
+  /* ---------- lobby ---------- */
+  .lobby{display:grid;grid-template-columns:1.35fr 1fr;gap:1.8rem;align-items:stretch;margin-top:1.2rem}
+  .joincard{padding:1.6rem 2rem 1.4rem;display:flex;flex-direction:column;justify-content:center;border-top:4px solid var(--ink)}
+  .joincard .lbl{font-family:var(--hand);font-weight:700;font-size:1.7rem;line-height:1}
+  .joincard .url{font-weight:800;font-size:clamp(1.4rem,2.4vw,2.6rem);word-break:break-all;line-height:1.15;margin:.2rem 0 1rem}
+  .joincard .url small{color:var(--muted);font-weight:600;font-size:.6em}
+  .bigpin{display:flex;gap:.12em;font-family:var(--display);font-size:clamp(4rem,9.5vw,10rem);line-height:1}
+  .bigpin span{background:var(--ink);color:#f0cf6a;border-radius:.14em;padding:.08em .12em .02em;box-shadow:0 .06em 0 #06102a,0 .12em .2em rgba(0,0,0,.2);text-shadow:0 .03em 0 var(--gold-deep)}
+  .bigpin span:nth-child(odd){transform:rotate(-1.5deg)} .bigpin span:nth-child(even){transform:rotate(1.5deg)}
+  .bigpin span:nth-child(3){margin-right:.18em}
+  .qrcard{background:var(--n-yellow);padding:1.6rem 1.2rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--hand);font-weight:700;font-size:1.8rem;gap:.2rem;transform:rotate(1.5deg)}
+  .qrcard .qr{width:min(100%,32vh);aspect-ratio:1;background:#fff;padding:.5rem;border-radius:6px}
+  .qrcard .qr svg{width:100%;height:100%;display:block}
+  .wifiwarn{margin-top:1.2rem;background:#fde7ec;border:2px solid var(--bad);color:var(--ink);border-radius:12px;padding:.8rem 1.2rem;font-weight:700}
+  .roster{margin-top:1.8rem;flex:1;display:flex;flex-direction:column;min-height:0}
+  .roster h2{display:flex;align-items:center;gap:.6rem;font-family:var(--hand);font-size:2.3rem;margin-bottom:.9rem;line-height:1}
+  .roster h2 .count{font-family:var(--display);font-size:.8em;background:var(--gold-grad);border:2px solid var(--gold-deep);color:var(--ink);border-radius:999px;padding:.05em .55em;min-width:1.6em;text-align:center}
+  .roster h2 .wait{font-family:var(--font);font-size:1rem;color:var(--muted);font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:.8rem;align-content:flex-start;overflow:auto;padding:.3rem}
+  .chip{display:inline-flex;align-items:center;gap:.4em;padding:.25em .9em .25em .4em;border-radius:4px 4px 12px 4px;font-weight:800;font-size:1.15rem;color:var(--ink);
+    box-shadow:0 6px 10px -4px rgba(92,70,30,.35);animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both;max-width:100%}
+  .chip:nth-child(5n+1){background:var(--n-pink)}.chip:nth-child(5n+2){background:var(--n-blue)}.chip:nth-child(5n+3){background:var(--n-yellow)}.chip:nth-child(5n+4){background:var(--n-green)}.chip:nth-child(5n+5){background:var(--n-lilac)}
+  .chip:nth-child(odd){rotate:-1.2deg}.chip:nth-child(even){rotate:1.2deg}
+  .chip .av{font-size:1.6em;line-height:1}
+  .chip .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:12em}
+  .chip.off{opacity:.45}
+  .chip.off::after{content:'offline';font-size:.7em;font-weight:700;margin-left:.2em;opacity:.8}
+  button.chip:hover{outline:3px solid var(--bad)}
+  .empty{color:var(--muted);font-family:var(--hand);font-size:1.8rem;padding:1rem 0;display:flex;align-items:center;gap:.7rem}
+  .empty .dots i{display:inline-block;width:.4em;height:.4em;border-radius:50%;background:var(--gold);margin:0 .12em;animation:floaty 1.2s infinite}
+  .empty .dots i:nth-child(2){animation-delay:.15s}.empty .dots i:nth-child(3){animation-delay:.3s}
+
+  /* ---------- question ---------- */
+  .qhead{display:flex;align-items:center;gap:.8rem;margin:.2rem 0 1rem}
+  .qtext{background:var(--card);color:var(--ink);border-radius:6px;padding:1.1rem 1.8rem;font-weight:800;font-size:clamp(1.6rem,2.8vw,3.4rem);line-height:1.18;text-align:center;box-shadow:var(--shadow);
+    border-bottom:6px solid var(--gold);position:relative}
+  .qmid{flex:1;display:grid;grid-template-columns:minmax(150px,1fr) 2fr minmax(150px,1fr);align-items:center;gap:1.2rem;padding:1rem 0;min-height:0}
+  .ring{position:relative;width:min(100%,24vh);aspect-ratio:1;justify-self:center;background:var(--card);border-radius:50%;box-shadow:var(--shadow)}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:clamp(3rem,6vw,6rem);color:var(--ink)}
+  .ring.low .num{color:var(--bad);animation:pulse .5s infinite}
+  .qimg{justify-self:center;max-height:32vh;max-width:100%;border-radius:6px;box-shadow:var(--shadow);background:#fff;border:8px solid #fff;transform:rotate(-1deg)}
+  .answered{justify-self:center;text-align:center;background:var(--n-green);padding:1rem 1.6rem 1.2rem;border-radius:4px 4px 14px 4px;box-shadow:var(--shadow);transform:rotate(2deg);min-width:11rem}
+  .answered .big{font-family:var(--display);font-size:clamp(3rem,5.5vw,5.5rem);line-height:1;color:var(--ink)}
+  .answered .lbl{font-weight:800;font-size:1.1rem}
+  .answered .think{margin-top:.4rem;font-family:var(--hand);font-weight:700;font-size:1.5rem}
+  .wall{align-self:stretch;display:flex;flex-wrap:wrap;gap:.5rem;align-content:center;justify-content:center;overflow:hidden;max-height:38vh}
+  .wchip{display:inline-flex;align-items:center;gap:.3em;padding:.15em .7em .15em .3em;border-radius:999px;background:rgba(255,255,255,.55);border:2px dashed rgba(19,37,79,.3);font-weight:800;font-size:1.2rem;opacity:.6;transition:.3s;color:var(--ink)}
+  .wchip .av{font-size:1.3em;filter:grayscale(.8)}
+  .wchip .nm{max-width:8em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .wchip.done{opacity:1;background:var(--gold-pale);border:2px solid var(--gold)}
+  .wchip.done .av{filter:none}
+  .wchip.done::after{content:'✓';color:var(--good);font-weight:800}
+  .wchip.off{opacity:.3}
+  .center-note{justify-self:center;text-align:center;font-family:var(--hand);font-weight:700;font-size:2.2rem;color:var(--ink)}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem 1.3rem}
+  .tile{display:flex;align-items:center;gap:.8em;padding:.9rem 1.4rem;border-radius:4px 4px 16px 16px / 4px 4px 24px 24px;font-weight:800;font-size:clamp(1.3rem,2.1vw,2.5rem);line-height:1.2;
+    min-height:clamp(70px,11vh,130px);box-shadow:0 12px 18px -8px rgba(92,70,30,.45);position:relative;transition:opacity .4s, transform .4s}
+  .tile:nth-child(1){rotate:-.5deg}.tile:nth-child(2){rotate:.6deg}.tile:nth-child(3){rotate:.4deg}.tile:nth-child(4){rotate:-.6deg}
+  .tile .shape{width:1.2em;height:1.2em}
+  .tile .txt{flex:1}
+  .tile .cnt{font-family:var(--display);font-size:1em;display:flex;align-items:center;gap:.3em}
+  .tile.dim{opacity:.32;transform:scale(.97);filter:saturate(.4)}
+  .tile.right{box-shadow:0 0 0 5px var(--gold),0 0 0 9px #fff,0 18px 28px -8px rgba(168,132,31,.6);transform:scale(1.02)}
+  .tile.right::before{content:'';position:absolute;top:-22px;left:50%;width:34px;height:42px;transform:translateX(-50%);background:var(--clip) center/contain no-repeat}
+  .tile .check{color:var(--good);font-size:1.1em}
+  .tile .bar{position:absolute;left:10px;bottom:8px;height:8px;border-radius:9px;background:var(--ink);opacity:.75;transition:width 1s ease-out;max-width:calc(100% - 20px)}
+  .readyscreen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;text-align:center}
+  .readyscreen .qn{font-family:var(--hand);font-size:2.6rem;font-weight:700;color:var(--ink)}
+  .readyscreen .qtext{max-width:1300px}
+  .readybar{width:min(700px,80%);height:16px;border-radius:99px;background:#fff;border:2px solid var(--ink);overflow:hidden}
+  .readybar i{display:block;height:100%;background:var(--gold-grad);width:0}
+  .paused{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;z-index:40;font-family:var(--display);font-size:4rem;color:var(--ink)}
+  .paused small{font-family:var(--font);font-size:1.2rem;color:var(--muted);font-weight:700}
+  .badge2x{background:var(--gold-grad);color:var(--ink);border:2px solid var(--gold-deep);border-radius:999px;padding:.15em .9em;font-weight:800}
+
+  /* ---------- reveal explanation ---------- */
+  .explain{justify-self:stretch;background:var(--card);border-radius:10px;border-top:5px solid var(--gold);box-shadow:var(--shadow);padding:1rem 1.4rem 1.2rem;text-align:center;max-width:46rem;margin:0 auto}
+  .explain .elbl{font-family:var(--hand);font-style:italic;font-weight:700;font-size:1.5rem;color:var(--gold-deep);line-height:1}
+  .explain .etext{font-weight:700;font-size:clamp(1.15rem,1.8vw,1.9rem);line-height:1.3;margin-top:.4rem;color:var(--ink);text-wrap:balance}
+  /* ---------- reveal stats ---------- */
+  .stat{justify-self:center;text-align:center;background:var(--card);padding:1rem 1.6rem;border-radius:6px;box-shadow:var(--shadow);min-width:11rem}
+  .stat:first-child{transform:rotate(-2deg);background:var(--n-yellow)}
+  .stat:last-child{transform:rotate(2deg);background:var(--n-blue)}
+  .stat .big{font-family:var(--display);font-size:clamp(3rem,5.5vw,5.5rem);line-height:1}
+  .stat .lbl{font-weight:800}
+
+  /* ---------- leaderboard ---------- */
+  .lb{max-width:1150px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:.85rem;flex:1;justify-content:center}
+  .lb h1{text-align:center;font-size:clamp(2.6rem,4.4vw,4.6rem);margin-bottom:.9rem}
+  .row{display:flex;align-items:center;gap:1rem;background:var(--card);border-radius:6px;padding:.55rem 1.3rem;font-size:clamp(1.3rem,2.2vw,2.4rem);font-weight:800;box-shadow:var(--shadow);animation:rise .5s both;
+    border-left:12px solid var(--n-blue)}
+  .row:nth-child(odd){rotate:-.3deg}.row:nth-child(even){rotate:.3deg}
+  .row.r1{background:var(--gold-pale);border-left-color:var(--gold);box-shadow:var(--glow)}
+  .row.r2{border-left-color:#b9c2cf}.row.r3{border-left-color:#d79a63}
+  .row .rk{width:2.2em;height:1.6em;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--ink);color:#fff;font-family:var(--display);font-weight:400}
+  .row.r1 .rk{background:var(--gold-grad);color:var(--ink);border:2px solid var(--gold-deep)}
+  .row.r2 .rk{background:linear-gradient(180deg,#f1f5f9,#a6b0bf);color:var(--ink)}
+  .row.r3 .rk{background:linear-gradient(180deg,#f3c49b,#b8692e);color:#2b1200}
+  .row .av{font-size:1.4em}
+  .row .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .mv{font-size:.6em;min-width:3em;text-align:center}
+  .row .mv.up{color:var(--good)}.row .mv.down{color:var(--bad)}
+  .row .streak{font-size:.6em;color:#c2410c}
+  .row .gain{font-size:.6em;color:var(--gold-deep);min-width:4em;text-align:right}
+  .row .sc{font-family:var(--display);font-weight:400}
+  .lbfoot{text-align:center;font-family:var(--hand);font-weight:700;font-size:1.5rem;margin-top:.4rem}
+
+  /* ---------- podium = stack of books ---------- */
+  .final{flex:1;display:flex;flex-direction:column;align-items:center;gap:.8rem}
+  .final h1{font-size:clamp(2.8rem,5vw,5.4rem);margin:.2rem 0 .6rem}
+  .podium{display:flex;align-items:flex-end;gap:1.4rem;justify-content:center;flex:1;width:100%;max-width:1100px;min-height:0}
+  .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;max-width:320px}
+  .step .av{font-size:clamp(3rem,6vw,6.5rem);animation:floaty 2.4s infinite}
+  .step .nm{font-weight:800;font-size:clamp(1.3rem,2.2vw,2.4rem);text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+  .step .sc{font-family:var(--hand);font-weight:700;font-size:1.5rem;color:var(--ink)}
+  .block{width:100%;border-radius:6px 6px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:.6rem;font-family:var(--display);font-size:clamp(2.5rem,5vw,5rem);transform-origin:bottom;
+    animation:grow 1s cubic-bezier(.2,.9,.3,1.1) both;position:relative;box-shadow:inset 0 -14px 0 rgba(0,0,0,.08),var(--shadow);
+    background-image:repeating-linear-gradient(180deg,transparent 0 46px,rgba(0,0,0,.08) 46px 49px,rgba(255,255,255,.35) 49px 51px)}
+  @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  .p1 .block{height:34vh;background-color:#e2bf55;color:var(--ink)}
+  .p2 .block{height:24vh;background-color:var(--ink);color:#f0cf6a}
+  .p3 .block{height:17vh;background-color:var(--n-blue);color:var(--ink)}
+  .p1{order:2}.p2{order:1}.p3{order:3}
+  .p2 .block{animation-delay:.6s}.p3 .block{animation-delay:.3s}.p1 .block{animation-delay:1s}
+  .p2 > :not(.block){animation:rise .5s .9s both}.p3 > :not(.block){animation:rise .5s .6s both}.p1 > :not(.block){animation:rise .5s 1.4s both}
+  .p1 .av::before{content:'';display:block;width:1em;height:.66em;margin:0 auto -.1em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 96'%3E%3Cpath d='M22 72 L16 28 L46 50 L70 16 L94 50 L124 28 L118 72 Z' fill='%23e2bf55' stroke='%23a8841f' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='20' y='70' width='100' height='14' rx='5' fill='%23d4af37' stroke='%23a8841f' stroke-width='4'/%3E%3C/svg%3E") center/contain no-repeat}
+  .rest{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;max-width:1300px}
+  .rest .chip{font-size:1rem;animation-delay:1.8s}
+
+  @media (max-width:900px){ .lobby,.setgrid{grid-template-columns:1fr} .sheet .body{grid-template-columns:1fr} .qmid{grid-template-columns:1fr 1fr} .qmid .qimg,.qmid .wall{grid-column:1/-1;order:3} .top .signature{display:none} }
+</style>
+</head>
+<body>
+<div class="netbar" id="netbar">Reconnecting to the game… the game keeps running.</div>
+<div id="doodles"></div>
+<header class="top">
+  <div class="logo" id="logo"></div>
+  <div class="mid" id="title" dir="auto"></div>
+  <span class="minipin hidden" id="minipin" title="Late joiners can still use this PIN"></span>
+  <span class="live hidden" id="live"><i></i><span>Live</span></span>
+  <span id="sig"></span>
+</header>
+<main id="app"></main>
+<footer class="bar hidden" id="bar"></footer>
+
+<!-- quiz editor -->
+<div class="modal hidden" id="editor" role="dialog" aria-modal="true" aria-labelledby="edTitle">
+  <div class="sheet">
+    <header><h2 id="edTitle">Write a quiz</h2><button class="btn icon" id="edClose" aria-label="Close">✕</button></header>
+    <div class="body">
+      <div><textarea id="edText" spellcheck="false" dir="auto"></textarea></div>
+      <div class="help">
+        <b>How to write it</b> — one question per block:
+<pre>Title: Science revision
+
+Q: Which planet is closest to the Sun?
+* Mercury
+- Venus
+- Earth
+- Mars
+time: 20
+
+Q: Water boils at 100°C at sea level.
+* True
+- False
+points: 2</pre>
+        <b>*</b> marks the correct answer (you can mark more than one) · <b>-</b> a wrong answer · 2 to 4 answers.<br>
+        Optional lines: <b>time:</b> seconds (5–240, default 20) · <b>points:</b> 0, 1 or 2 (double points) · <b>image:</b> a picture link · <b>explain:</b> a short explanation shown after answering · <b>Category:</b> under the title.<br>
+        Arabic and English both work.
+        <div class="preview" id="edPreview"></div>
+      </div>
+    </div>
+    <footer><button class="btn" id="edCancel">Cancel</button><button class="btn primary" id="edSave">Save quiz</button></footer>
+  </div>
+</div>
+
+<script src="/common.js"></script>
+<script src="/brand.js"></script>
+<script src="/qr.js"></script>
+<script>
+'use strict';
+const HOST_KEY = 'classlive.host';
+const app = $('#app'), bar = $('#bar');
+let S = null, conn = null, host = store.get(HOST_KEY);
+let view = { key: '', players: new Set() };
+let raf = 0, lastTick = -1, quizzes = [], selectedQuiz = null, editingId = null;
+let settings = store.get('classlive.settings') || { feedback: 'instant', lateJoin: true, shuffle: false };
+sfx.on = store.get('classlive.sound') !== false;
+$('#doodles').outerHTML = doodleLayer();
+$('#logo').innerHTML = `<span class="crownmini">${ART.crown}</span>${fx3d(BRAND.appName[0], 'navy', 'sm serif')}${BRAND.appName[1] ? fx3d(BRAND.appName[1], 'gold', 'sm serif') : ''}`;
+$('#sig').outerHTML = signatureHTML('top');
+const setPhase = p => { document.body.dataset.phase = p; };
+
+/* =========================== setup screen =========================== */
+async function showSetup(msg) {
+  conn?.close(); conn = null; S = null; view.key = 'setup';
+  sfx.music(false);
+  $('#title').textContent = ''; $('#minipin').classList.add('hidden'); $('#live').classList.add('hidden'); bar.classList.add('hidden');
+  setPhase('setup');
+  app.innerHTML = `<section class="setup rise">
+    <div class="hero"><div class="crown">${ART.crown}</div>${title3D()}
+      <div class="brush">${esc(BRAND.subtitle)}</div>
+      <div class="highlight">${BRAND.ribbon.map(esc).join('<b>·</b>')}</div></div>
+    <div class="sechead"><span class="marker">Choose your quiz</span></div>
+    <div class="quizgrid" id="qgrid"><div class="empty">Loading quizzes…</div></div>
+    <div class="setgrid">
+      <div class="notebook opts"><h3><span class="marker">Game settings</span></h3>
+        <div class="opt"><span class="num">1</span><label class="h">Answer feedback on phones</label>
+          <div class="seg" data-k="feedback"><button data-v="instant">Instantly</button><button data-v="reveal">After each question</button></div></div>
+        <div class="opt"><span class="num">2</span><label class="h">Late joining</label>
+          <div class="seg" data-k="lateJoin"><button data-v="true">Allowed</button><button data-v="false">Lobby only</button></div></div>
+        <div class="opt"><span class="num">3</span><label class="h">Question order</label>
+          <div class="seg" data-k="shuffle"><button data-v="false">As written</button><button data-v="true">Shuffle</button></div></div>
+      </div>
+      <div class="paper gocard"><h3>Ready to play?</h3>
+        <ol><li>Show this board to the class</li><li>Students scan the QR or type the PIN</li><li>Press Start when everyone is in</li></ol>
+        <button class="btn primary bigcta" id="create" disabled>Create game ▶</button>${store.get('classlive.key') ? '<button class="btn" id="logout" type="button">Sign out</button>' : ''}</div>
+    </div>
+  </section>`;
+  $$('.seg').forEach(seg => {
+    const k = seg.dataset.k;
+    const paint = () => $$('button', seg).forEach(b => b.classList.toggle('on', String(settings[k]) === b.dataset.v));
+    seg.onclick = e => { const b = e.target.closest('button'); if (!b) return; settings[k] = b.dataset.v === 'true' ? true : b.dataset.v === 'false' ? false : b.dataset.v; store.set('classlive.settings', settings); paint(); };
+    paint();
+  });
+  $('#create').onclick = createGame;
+  if (msg) toast(msg, 4000);
+  await loadQuizzes();
+}
+async function loadQuizzes(selectId) {
+  try { quizzes = (await getJSON('/api/quizzes')).quizzes; } catch (e) { if (e.needPassword) return showLogin(); if (e.localOnly) return showLocalOnly(); quizzes = []; }
+  if (selectId) selectedQuiz = selectId;
+  if (!quizzes.find(q => q.id === selectedQuiz)) selectedQuiz = quizzes[0]?.id || null;
+  const grid = $('#qgrid'); if (!grid) return;
+  const icons = [ART.crown, ART.starNavy, ART.bulb, ART.starGold, ART.heart];
+  grid.innerHTML = quizzes.map((q, i) => `<button class="quiz sticky clip ${q.id === selectedQuiz ? 'sel' : ''}" data-id="${esc(q.id)}">
+      <span class="kicker" dir="auto">${esc(q.category && q.category !== q.title ? q.category : (q.category ? 'Category' : 'Quiz'))}</span><span class="t" dir="auto">${esc(q.title)}</span><span class="ppl">${ART.people}</span>
+      <span class="n">${q.count} question${q.count === 1 ? '' : 's'}</span>
+      <span class="ic">${icons[i % 5]}</span><span class="edit" data-edit="${esc(q.id)}">Edit</span></button>`).join('') +
+    `<button class="quiz new" id="newQuiz"><span>＋</span>Write a new quiz</button>`;
+  grid.onclick = e => {
+    const ed = e.target.closest('[data-edit]'); if (ed) return openEditor(ed.dataset.edit);
+    const b = e.target.closest('.quiz'); if (!b) return;
+    if (b.id === 'newQuiz') return openEditor();
+    selectedQuiz = b.dataset.id; $$('.quiz', grid).forEach(x => x.classList.toggle('sel', x === b)); $('#create').disabled = false;
+  };
+  $('#create').disabled = !selectedQuiz;
+}
+async function createGame() {
+  const btn = $('#create'); btn.disabled = true; sfx.ac();
+  try {
+    const r = await post('/api/host/create', { quizId: selectedQuiz, settings });
+    host = { pin: r.pin, token: r.token }; store.set(HOST_KEY, host); startLive();
+  } catch (e) { if (e.needPassword) return showLogin(); toast(e.message); btn.disabled = false; }
+}
+
+
+/* =========================== teacher board on another device =========================== */
+function showLocalOnly() {
+  setPhase('setup'); bar.classList.add('hidden');
+  app.innerHTML = `<section class="login rise"><div class="hero"><div class="crown">${ART.crown}</div>${title3D()}<div class="brush">Teacher board</div></div>
+    <div class="paper logincard"><b>Open the teacher board on the Mac that is running Class Live.</b>
+    <p class="lnote">This keeps the questions and answers private. Students join at <b>${esc(location.host)}/play</b></p></div></section>`;
+}
+
+/* =========================== teacher password =========================== */
+function showLogin(msg) {
+  conn?.close(); conn = null; S = null; view.key = 'login'; setPhase('setup');
+  $('#minipin').classList.add('hidden'); $('#live').classList.add('hidden'); bar.classList.add('hidden'); $('#title').textContent = '';
+  app.innerHTML = `<section class="login rise">
+    <div class="hero"><div class="crown">${ART.crown}</div>${title3D()}<div class="brush">Teacher sign in</div></div>
+    <form class="paper logincard" id="lf" autocomplete="off">
+      <label for="pw">Teacher password</label>
+      <input id="pw" type="password" autocomplete="current-password" required>
+      <button class="btn primary" type="submit">Open the teacher board</button>
+      <div class="lerr" id="lerr">${esc(msg || '')}</div>
+      <p class="lnote">Students don’t need a password. They join at <b>${esc(location.host)}/play</b></p>
+    </form></section>`;
+  $('#pw').focus();
+  $('#lf').onsubmit = async e => {
+    e.preventDefault(); const pw = $('#pw').value; if (!pw) return;
+    store.set('classlive.key', pw);
+    try { await post('/api/teacher/login', {}); showSetup(); }
+    catch { store.del('classlive.key'); $('#lerr').textContent = 'Wrong password. Try again.'; $('#pw').select(); }
+  };
+}
+
+/* =========================== quiz editor =========================== */
+function quizToText(q) {
+  return `Title: ${q.title}\n` + (q.category ? `Category: ${q.category}\n` : '') + '\n' + q.questions.map(x => [`Q: ${x.text}`, ...x.options.map((o, i) => `${x.correct.includes(i) ? '*' : '-'} ${o}`),
+    x.time !== 20 ? `time: ${x.time}` : '', x.points !== 1 ? `points: ${x.points}` : '', x.image ? `image: ${x.image}` : '', x.explain ? `explain: ${x.explain}` : ''].filter(Boolean).join('\n')).join('\n\n');
+}
+function parseQuiz(text) {
+  const quiz = { title: '', category: '', questions: [] }, errors = []; let cur = null;
+  text.split(/\r?\n/).forEach((raw, n) => {
+    const line = raw.trim(); if (!line) return;
+    let m;
+    if ((m = line.match(/^(title|العنوان)\s*[:：]\s*(.*)$/i))) quiz.title = m[2];
+    else if ((m = line.match(/^(category|التصنيف)\s*[:：]\s*(.*)$/i))) quiz.category = m[2];
+    else if ((m = line.match(/^(q\d*|question|س)\s*[:：.)-]\s*(.*)$/i))) { cur = { text: m[2], options: [], correct: [], time: 20, points: 1, image: '', explain: '' }; quiz.questions.push(cur); }
+    else if (!cur) errors.push(`Line ${n + 1}: start a question with "Q:"`);
+    else if ((m = line.match(/^([*+✓✔])\s*(.+)$/))) { cur.correct.push(cur.options.length); cur.options.push(m[2]); }
+    else if ((m = line.match(/^[-–•]\s*(.+)$/))) cur.options.push(m[1]);
+    else if ((m = line.match(/^(time|الوقت)\s*[:：]\s*(\d+)/i))) cur.time = +m[2];
+    else if ((m = line.match(/^(points|النقاط)\s*[:：]\s*(\d)/i))) cur.points = +m[2];
+    else if ((m = line.match(/^(image|صورة)\s*[:：]\s*(\S+)/i))) cur.image = m[2];
+    else if ((m = line.match(/^(explain|explanation|الشرح)\s*[:：]\s*(.+)$/i))) cur.explain = m[2];
+    else cur.text += ' ' + line;
+  });
+  quiz.questions.forEach((q, i) => {
+    if (q.options.length < 2) errors.push(`Question ${i + 1} needs 2–4 answers`);
+    if (q.options.length > 4) errors.push(`Question ${i + 1} has more than 4 answers`);
+    if (!q.correct.length) errors.push(`Question ${i + 1} has no correct answer (start it with *)`);
+  });
+  if (!quiz.questions.length) errors.push('No questions yet');
+  return { quiz, errors };
+}
+async function openEditor(id) {
+  editingId = id || null; let text = 'Title: My new quiz\n\nQ: \n* \n- \n- \n- \n';
+  if (id) { try { text = quizToText((await getJSON('/api/quizzes/' + id)).quiz); } catch {} }
+  $('#edTitle').textContent = id ? 'Edit quiz' : 'Write a quiz';
+  $('#edText').value = text; $('#editor').classList.remove('hidden'); updatePreview(); $('#edText').focus();
+}
+function updatePreview() {
+  const { quiz, errors } = parseQuiz($('#edText').value);
+  $('#edPreview').innerHTML = (errors.length ? errors.slice(0, 6).map(e => `<div class="err">⚠ ${esc(e)}</div>`).join('') : `<div class="ok">✓ ${quiz.questions.length} question(s) ready</div>`) +
+    quiz.questions.map((q, i) => `<div dir="auto" style="margin-top:.4rem"><b>${i + 1}.</b> ${esc(q.text)} <span style="opacity:.7">(${q.options.length} answers, ${q.time}s${q.points === 2 ? ', double points' : ''})</span></div>`).join('');
+  $('#edSave').disabled = errors.length > 0;
+}
+$('#edText').addEventListener('input', updatePreview);
+const closeEditor = () => $('#editor').classList.add('hidden');
+$('#edClose').onclick = closeEditor; $('#edCancel').onclick = closeEditor;
+$('#edSave').onclick = async () => {
+  const { quiz, errors } = parseQuiz($('#edText').value); if (errors.length) return;
+  if (editingId) quiz.id = editingId;
+  try { const r = await post('/api/quizzes', { quiz }); closeEditor(); toast('Quiz saved'); await loadQuizzes(r.id); } catch (e) { toast(e.message); }
+};
+
+/* =========================== live game =========================== */
+function startLive() {
+  conn?.close();
+  $('#live').classList.remove('hidden');
+  conn = connect(`/api/events?role=host&pin=${host.pin}&token=${host.token}`, {
+    state: onState,
+    invalid: () => { store.del(HOST_KEY); host = null; showSetup('That game has ended. Create a new one.'); },
+    closed: () => { store.del(HOST_KEY); host = null; showSetup(); },
+  }, ok => { $('#live').classList.toggle('off', !ok); $('#live span').textContent = ok ? 'Live' : 'Reconnecting'; $('#netbar').classList.toggle('show', !ok); });
+}
+
+function onState(st) {
+  const prev = S; S = st; clock.sync(st.serverNow);
+  $('#title').textContent = st.category ? `${st.category}` : st.title;
+  $('#minipin').textContent = 'PIN ' + st.pin; $('#minipin').classList.toggle('hidden', st.phase === 'lobby' || st.phase === 'final');
+  setPhase(st.phase);
+  const key = `${st.phase}:${st.qIndex}:${st.round}`;
+  const fresh = key !== view.key; view.key = key;
+  // sounds on transitions
+  if (fresh && prev) {
+    if (st.phase === 'ready') sfx.start();
+    if (st.phase === 'reveal') sfx.reveal();
+    if (st.phase === 'final') sfx.fanfare();
+  }
+  sfx.music(['lobby'].includes(st.phase) && sfx.on, 300);
+  ({ lobby: renderLobby, ready: renderReady, question: renderQuestion, reveal: renderReveal, leaderboard: renderLeaderboard, final: renderFinal })[st.phase](fresh, prev);
+  renderBar();
+  renderPause();
+}
+
+/* ---------- lobby ---------- */
+function renderLobby(fresh) {
+  if (fresh) {
+    stopLoop();
+    view.players = new Set(S.players.map(p => p.id));
+    const url = new URL(S.joinUrl), shortUrl = url.host + '/play';
+    app.innerHTML = `<div class="lobby rise">
+        <div class="joincard paper">
+          <div class="lbl">Go to</div>
+          <div class="url">${esc(shortUrl)} <small>or scan the QR code</small></div>
+          <div class="lbl">Game PIN</div>
+          <div class="bigpin" aria-label="Game PIN ${S.pin.split('').join(' ')}">${S.pin.split('').map(d => `<span>${d}</span>`).join('')}</div>
+        </div>
+        <div class="qrcard sticky clip"><div class="qr">${QR.svg(S.joinUrl, { dark: '#13254f', border: 1 })}</div><div>Scan to join</div></div>
+      </div>
+      ${/\/\/(localhost|127\.)/.test(S.joinUrl) ? '<div class="wifiwarn">⚠ This Mac is not connected to Wi-Fi, so students can’t join yet. Connect it to the classroom Wi-Fi, then press <b>New game</b>.</div>' : ''}
+      <section class="roster"><h2>Players <span class="count" id="pc">0</span> <span class="wait" id="lockedNote"></span></h2><div class="chips" id="chips"></div></section>`;
+  }
+  $('#pc').textContent = S.players.length;
+  $('#lockedNote').textContent = S.locked ? '🔒 Locked — no new students can join' : 'Click a name to remove it';
+  const chips = $('#chips');
+  if (!S.players.length) { chips.innerHTML = `<div class="empty"><span class="dots"><i></i><i></i><i></i></span> Waiting for students to join…</div>`; return; }
+  const ids = new Set(S.players.map(p => p.id));
+  let joined = false;
+  for (const p of [...S.players].sort((a, b) => a.name.localeCompare(b.name))) if (!view.players.has(p.id)) joined = true;
+  // keyed update: keep existing chips (so only newcomers animate)
+  $('.empty', chips)?.remove();
+  for (const el of $$('.chip', chips)) if (!ids.has(el.dataset.id)) el.remove();
+  for (const p of S.players.slice().sort((a, b) => a.name.localeCompare(b.name))) {
+    let el = chips.querySelector(`[data-id="${p.id}"]`);
+    if (!el) {
+      el = document.createElement('button'); el.className = 'chip'; el.dataset.id = p.id; el.title = 'Remove ' + p.name;
+      el.innerHTML = `<span class="av">${esc(p.avatar)}</span><span class="nm" dir="auto">${esc(p.name)}</span>`;
+      el.onclick = () => { if (confirm(`Remove ${p.name} from the game?`)) act('kick', { pid: p.id }); };
+      chips.append(el);
+    }
+    el.classList.toggle('off', !p.connected);
+  }
+  if (joined && !fresh) sfx.join();
+  view.players = ids;
+}
+
+/* ---------- ready (get set) ---------- */
+function renderReady(fresh) {
+  if (fresh) {
+    const q = S.question;
+    app.innerHTML = `<div class="readyscreen">
+      <div class="qn">Question ${S.qIndex + 1} of ${S.total} ${q.points === 2 ? '<span class="badge2x">⚡ Double points</span>' : q.points === 0 ? '<span class="pill">Practice — no points</span>' : ''}</div>
+      <div class="qtext rise" dir="auto">${esc(q.text)}</div>
+      <div class="readybar"><i id="rb"></i></div></div>`;
+  }
+  loop(() => { const left = timeLeft(S.timer), pct = 100 - left / S.timer.duration * 100; const rb = $('#rb'); if (rb) rb.style.width = pct + '%'; });
+}
+
+/* ---------- question ---------- */
+function tilesHTML(q, dist) {
+  const total = dist ? dist.reduce((a, b) => a + b, 0) || 1 : 1;
+  return `<div class="tiles">${q.options.map((o, i) => {
+    const right = q.correct.includes(i);
+    return `<div class="tile c${i} ${dist ? (right ? 'right' : 'dim') : ''}">${shape(i)}<span class="txt" dir="auto">${esc(o)}</span>
+      ${dist ? `<span class="cnt">${right ? '<span class="check">✔</span>' : ''}${dist[i]}</span><span class="bar" style="width:0" data-w="${dist[i] / total * 100}"></span>` : ''}</div>`;
+  }).join('')}</div>`;
+}
+function renderQuestion(fresh) {
+  const q = S.question;
+  if (fresh) {
+    lastTick = -1;
+    app.innerHTML = `<div class="qhead"><span class="pill">Question ${S.qIndex + 1} / ${S.total}</span>${q.points === 2 ? '<span class="badge2x">⚡ Double points</span>' : ''}</div>
+      <div class="qtext" dir="auto">${esc(q.text)}</div>
+      <div class="qmid">
+        <div class="ring" id="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#e8dcc4" stroke-width="12"/>
+          <circle id="arc" cx="60" cy="60" r="52" fill="none" style="stroke:var(--gold)" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0"/></svg><div class="num" id="secs"></div></div>
+        ${q.image ? `<img class="qimg" src="${esc(q.image)}" alt="" onerror="this.remove()">` : '<div class="wall" id="wall"></div>'}
+        <div class="answered"><div class="big" id="ansN">0</div><div class="lbl" id="ansL">answered</div><div class="think" id="thinkN"></div></div>
+      </div>${tilesHTML(q)}`;
+  }
+  $('#ansN').textContent = S.counts.answered;
+  $('#ansL').textContent = `of ${S.counts.answered + S.counts.thinking} answered`;
+  $('#thinkN').textContent = S.counts.thinking ? `🤔 ${S.counts.thinking} still thinking` : '✅ Everyone answered!';
+  const wall = $('#wall');
+  if (wall) wall.innerHTML = S.players.slice().sort((a, b) => a.name.localeCompare(b.name)).map(p =>
+    `<span class="wchip ${p.answered ? 'done' : p.connected ? '' : 'off'}" title="${esc(p.name)}"><span class="av">${esc(p.avatar)}</span><span class="nm" dir="auto">${esc(p.name)}</span></span>`).join('');
+  loop(() => {
+    const left = timeLeft(S.timer), secs = Math.ceil(left / 1000);
+    const arc = $('#arc'), num = $('#secs'); if (!arc) return;
+    arc.style.strokeDashoffset = 326.7 * (1 - left / S.timer.duration);
+    arc.style.stroke = left < 5000 ? '#ff7a85' : 'var(--gold)';
+    num.textContent = secs; $('#ring').classList.toggle('low', secs <= 5 && !S.timer.paused);
+    if (secs !== lastTick && secs <= 5 && secs > 0 && !S.timer.paused) { lastTick = secs; sfx.tick(secs <= 3); }
+  });
+}
+
+/* ---------- reveal ---------- */
+function renderReveal(fresh) {
+  const q = S.question;
+  const answered = S.players.filter(p => p.answered).length;
+  const right = S.players.filter(p => p.answered && p.lastCorrect).length;
+  const pct = S.players.length ? Math.round(right / S.players.length * 100) : 0;
+  if (fresh) {
+    stopLoop();
+    app.innerHTML = `<div class="qhead"><span class="pill">Question ${S.qIndex + 1} / ${S.total}</span></div>
+      <div class="qtext" dir="auto">${esc(q.text)}</div>
+      <div class="qmid">
+        <div class="stat"><div class="big">${pct}%</div><div class="lbl">got it right</div></div>
+        ${q.explain ? `<div class="explain"><div class="elbl">Why?</div><div class="etext" dir="auto">${esc(q.explain)}</div></div>` : q.image ? `<img class="qimg" src="${esc(q.image)}" alt="" onerror="this.remove()">` : `<div class="center-note">${right ? '🎉 ' + right + ' correct!' : 'Tricky one! 🤔'}</div>`}
+        <div class="stat"><div class="big">${answered}/${S.players.length}</div><div class="lbl">answered</div></div>
+      </div>${tilesHTML(q, S.dist)}`;
+    requestAnimationFrame(() => setTimeout(() => $$('.tile .bar').forEach(b => b.style.width = b.dataset.w + '%'), 80));
+  }
+}
+
+/* ---------- leaderboard ---------- */
+function countUp(el, from, to, ms = 1000) {
+  const t0 = performance.now();
+  (function f(t) { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(Math.round(from + (to - from) * e)); if (k < 1) requestAnimationFrame(f); })(t0);
+}
+function renderLeaderboard(fresh) {
+  if (!fresh) return;
+  stopLoop();
+  const top = S.players.slice(0, 5);
+  const isLast = S.qIndex + 1 >= S.total;
+  app.innerHTML = `<div class="lb"><h1>${fx3d(isLast ? 'Final standings' : 'Leaderboard', 'navy', 'serif')}</h1>
+    ${top.map((p, i) => {
+      const mv = p.prevRank ? p.prevRank - p.rank : 0;
+      return `<div class="row ${p.rank <= 3 ? 'r' + p.rank : ''} ${p.rank === 1 ? 'shine' : ''}" style="animation-delay:${(top.length - i) * .12}s">
+        <span class="rk">${p.rank}</span><span class="av">${esc(p.avatar)}</span><span class="nm" dir="auto">${esc(p.name)}</span>
+        ${p.streak >= 2 ? `<span class="streak">🔥 ${p.streak}</span>` : ''}
+        <span class="mv ${mv > 0 ? 'up' : mv < 0 ? 'down' : ''}">${mv > 0 ? '▲ ' + mv : mv < 0 ? '▼ ' + -mv : ''}</span>
+        <span class="gain">${p.lastPoints ? '+' + fmt(p.lastPoints) : ''}</span>
+        <span class="sc" data-from="${p.score - (p.lastPoints || 0)}" data-to="${p.score}">${fmt(p.score - (p.lastPoints || 0))}</span></div>`;
+    }).join('')}
+    ${S.players.length > 5 ? `<div class="lbfoot">+ ${S.players.length - 5} more players — every phone shows its own rank</div>` : ''}</div>`;
+  setTimeout(() => $$('.row .sc').forEach(el => countUp(el, +el.dataset.from, +el.dataset.to)), 700);
+}
+
+/* ---------- final ---------- */
+function renderFinal(fresh) {
+  if (!fresh) return;
+  stopLoop();
+  const [a, b, c] = S.players;
+  const step = (p, n) => p ? `<div class="step p${n}"><div class="av">${esc(p.avatar)}</div><div class="nm" dir="auto">${esc(p.name)}</div><div class="sc">${fmt(p.score)} pts</div><div class="block ${n === 1 ? 'shine' : ''}">${n}</div></div>` : `<div class="step p${n}"></div>`;
+  app.innerHTML = `<div class="final"><h1 class="rise">${fx3d('Congratulations', 'gold', 'serif')}</h1>
+    <div class="podium">${step(a, 1)}${step(b, 2)}${step(c, 3)}</div>
+    <div class="rest">${S.players.slice(3).map(p => `<span class="chip"><span class="av">${esc(p.avatar)}</span><b>${p.rank}.</b> <span class="nm" dir="auto">${esc(p.name)}</span> · ${fmt(p.score)}</span>`).join('')}</div></div>`;
+  setTimeout(() => confetti(6000), 1500);
+}
+
+/* ---------- control bar ---------- */
+function renderBar() {
+  bar.classList.remove('hidden');
+  const st = S, ph = st.phase, paused = st.timer.paused;
+  const B = (id, label, cls = '') => `<button class="btn ${cls}" data-a="${id}">${label}</button>`;
+  let left = '', right = '';
+  if (ph === 'lobby') {
+    left = B(st.locked ? 'unlock' : 'lock', st.locked ? '🔓 Unlock joining' : '🔒 Lock joining') + `<span class="hint">${st.counts.connected} online</span>`;
+    right = `<button class="btn primary" data-a="start" ${st.players.length ? '' : 'disabled'}>Start game ▶</button>`;
+  } else if (ph === 'ready' || ph === 'question') {
+    left = B(paused ? 'resume' : 'pause', paused ? '▶ Resume' : '⏸ Pause') + (ph === 'question' ? B('addtime', '+10 s') : '') + B('end', '■ End game', 'danger');
+    right = `<button class="btn primary" data-a="next">${ph === 'ready' ? 'Show answers now ⏭' : 'Stop &amp; reveal ⏭'}</button>`;
+  } else if (ph === 'reveal') {
+    left = B('end', '■ End game', 'danger');
+    right = `<button class="btn primary" data-a="next">Leaderboard ⏭</button>`;
+  } else if (ph === 'leaderboard') {
+    const last = st.qIndex + 1 >= st.total;
+    left = B('end', '■ End game', 'danger');
+    right = `<button class="btn primary" data-a="${last ? 'end' : 'next'}" data-noconfirm="1">${last ? 'Final results 🏆' : 'Next question ⏭'}</button>`;
+  } else if (ph === 'final') {
+    left = B('certs', '🏅 Certificates') + B('csv', '⬇ Download results') + B('again', '↻ Play again (same students)');
+    right = `<button class="btn primary" data-a="new">New game</button>`;
+  }
+  bar.innerHTML = `${left}<span class="grow"></span>
+    <span class="hint"><kbd>Space</kbd> next · <kbd>P</kbd> pause · <kbd>F</kbd> full screen</span>
+    <button class="btn icon" data-a="sound" title="Sound (M)">${sfx.on ? '🔊' : '🔇'}</button>
+    <button class="btn icon" data-a="fs" title="Full screen (F)">⛶</button>${right}`;
+}
+bar.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (b && !b.disabled) doAction(b.dataset.a, b); });
+
+function doAction(a, btn) {
+  sfx.ac();
+  if (a === 'sound') { sfx.on = !sfx.on; store.set('classlive.sound', sfx.on); if (!sfx.on) sfx.music(false); renderBar(); if (S) onState(S); return; }
+  if (a === 'fs') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.().catch(() => {}); return; }
+  if (a === 'csv') return downloadCSV();
+  if (a === 'certs') return openCertificates(S.players.map(p => ({ name: p.name, avatar: p.avatar, rank: p.rank, score: p.score, correct: p.correctCount, bestStreak: p.bestStreak })),
+    { title: S.title, total: S.total, players: S.players.length }, { teacherTools: true });
+  if (a === 'new') { if (confirm('Close this game and start a new one?')) act('close').then(() => { store.del(HOST_KEY); host = null; showSetup(); }); return; }
+  if (a === 'end' && !btn?.dataset.noconfirm && !confirm('End the game now and show the final results?')) return;
+  act(a);
+}
+async function act(action, extra = {}) {
+  if (!host) return;
+  try { await post('/api/host/action', { pin: host.pin, token: host.token, action, ...extra }, { retries: 2 }); }
+  catch (e) { if (e.status === 404) { store.del(HOST_KEY); host = null; showSetup('That game no longer exists.'); } else toast(e.message); }
+}
+
+document.addEventListener('keydown', e => {
+  if (!S || e.target.closest('input,textarea') || !$('#editor').classList.contains('hidden')) return;
+  const k = e.key.toLowerCase();
+  if (k === ' ' || k === 'enter' || k === 'arrowright' || k === 'pagedown') {
+    e.preventDefault();
+    const primary = $('.btn.primary', bar); if (primary && !primary.disabled && S.phase !== 'final') primary.click();
+  } else if (k === 'p' && ['ready', 'question'].includes(S.phase)) act(S.timer.paused ? 'resume' : 'pause');
+  else if (k === 'f') doAction('fs');
+  else if (k === 'm') doAction('sound');
+});
+
+function renderPause() {
+  let ov = $('#pausedOv');
+  const show = S && S.timer.paused && ['ready', 'question'].includes(S.phase);
+  if (!show) return ov?.remove();
+  if (!ov) { ov = document.createElement('div'); ov.id = 'pausedOv'; ov.className = 'paused'; document.body.append(ov); }
+  ov.innerHTML = `<div>⏸ Paused</div><small>Students' screens are frozen too · ${Math.ceil(S.timer.remaining / 1000)} s left</small><button class="btn primary" onclick="act('resume')">▶ Resume</button>`;
+}
+
+function downloadCSV() {
+  const qs = S.questions;
+  const head = ['Rank', 'Name', 'Score', 'Correct answers', 'Best streak', ...Array.from({ length: S.total }, (_, i) => `Q${i + 1}`)];
+  const rows = S.players.map(p => [p.rank, p.name, p.score, p.correctCount, p.bestStreak,
+    ...Array.from({ length: S.total }, (_, i) => { const a = p.answers[i]; return a ? (a.correct ? 'Correct' : 'Wrong') + ` (${(a.ms / 1000).toFixed(1)}s)` : 'No answer'; })]);
+  const csv = '﻿' + [head, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `${S.title.replace(/[^\p{L}\p{N}]+/gu, '-')}-results.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* animation loop for timers */
+let loopFn = null;
+function loop(fn) { loopFn = fn; if (!raf) { const tick = () => { loopFn?.(); raf = requestAnimationFrame(tick); }; raf = requestAnimationFrame(tick); } }
+function stopLoop() { cancelAnimationFrame(raf); raf = 0; loopFn = null; }
+
+document.addEventListener('click', () => sfx.ac(), { once: true });
+if (host) startLive(); else showSetup();
+document.addEventListener('click', e => { if (e.target.closest('#logout')) { store.del('classlive.key'); store.del(HOST_KEY); host = null; showLogin('Signed out.'); } });
+</script>
+</body>
+</html>

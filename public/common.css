@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Lilita+One&family=Caveat:wght@600;700&family=Great+Vibes&family=Cinzel:wght@600;700&display=swap');
+/* =============== Class Live — "English League" poster identity ===============
+   Cream paper · Navy ink · Gold accents · pastel sticky notes · hand-drawn doodles */
+:root{
+  --navy-950:#081631; --navy-900:#0c1d42; --navy-800:#13254f; --navy-700:#1b3366; --navy-600:#25427e;
+  --gold:#d4af37; --gold-light:#f3d98a; --gold-pale:#fff4d1; --gold-deep:#a8841f; --gold-ink:#13254f;
+  --gold-grad:linear-gradient(180deg,#fbe9a8 0%,#ecc95c 40%,#d4af37 70%,#b8922a 100%);
+  --gold-text:linear-gradient(180deg,#fff2c2 0%,#f0cf6a 45%,#c9a030 100%);
+  /* paper */
+  --paper:#f8f1e4; --paper-2:#efe4cf; --card:#fffdf7; --lined:#dfe8f3;
+  /* sticky-note pastels (accents only — navy & gold stay the identity) */
+  --n-pink:#f9c0d3; --n-blue:#b5d9f6; --n-yellow:#fbd97a; --n-green:#a5e2c8; --n-lilac:#d3c8f1;
+  /* roles */
+  --ink:#13254f; --text:#13254f; --muted:#5d6b88; --accent:var(--gold); --accent-ink:#13254f;
+  --panel:var(--card); --panel-strong:#fff; --line:rgba(19,37,79,.16); --line-soft:rgba(19,37,79,.08);
+  --good:#1f9d63; --bad:#d9435f; --live:#1f9d63; --overlay:rgba(248,241,228,.86);
+  /* answer tiles = sticky notes, each with its own shape */
+  --a0:#f6a3bf; --a1:#8fc4f2; --a2:#f8cf5e; --a3:#86d9b5;
+  --radius:18px; --shadow:0 2px 0 rgba(19,37,79,.06),0 10px 24px rgba(92,70,30,.16);
+  --lift:0 14px 30px rgba(92,70,30,.22);
+  --glow:0 0 0 2px var(--gold),0 8px 22px rgba(212,175,55,.35);
+  --font:'Baloo Bhaijaan 2', ui-rounded, 'Segoe UI', system-ui, -apple-system, 'Noto Sans Arabic', Tahoma, sans-serif;
+  --display:'Lilita One','CL Black','Arial Rounded MT Bold','Arial Black','Baloo Bhaijaan 2',system-ui,sans-serif;
+  --hand:'CL Title','Lora',Georgia,'Times New Roman',serif;   /* formal: elegant serif italic for headings */
+  --script:'Great Vibes','Segoe Script','Snell Roundhand','Brush Script MT',cursive;
+  --serif:'Cinzel', Georgia, serif;
+  --clip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbe9a8'/%3E%3Cstop offset='.55' stop-color='%23d4af37'/%3E%3Cstop offset='1' stop-color='%23a8841f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M12 22 V9 a8 8 0 0 1 16 0 V22' fill='none' stroke='%23a8841f' stroke-width='3.4' stroke-linecap='round'/%3E%3Crect x='5' y='20' width='30' height='24' rx='4' fill='url(%23g)' stroke='%23a8841f' stroke-width='1.5'/%3E%3Crect x='8' y='23' width='24' height='5' rx='2' fill='%23fff4d1' opacity='.7'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--text);background-color:var(--paper);
+  background-image:
+    radial-gradient(900px 600px at 8% -8%,rgba(255,255,255,.95),transparent 60%),
+    radial-gradient(700px 500px at 100% 0%,rgba(255,236,190,.55),transparent 60%),
+    radial-gradient(1000px 700px at 110% 110%,rgba(222,196,150,.45),transparent 60%),
+    linear-gradient(115deg,transparent 0 58%,rgba(255,255,255,.35) 58% 61%,transparent 61% 66%,rgba(255,255,255,.25) 66% 68%,transparent 68%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .2 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,textarea,select{font:inherit}
+.hidden{display:none!important}
+.goldtext{background:var(--gold-text);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.hand{font-family:var(--hand);font-weight:700}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;padding:.6em 1.3em;border-radius:999px;font-weight:700;font-size:1.05rem;color:var(--ink);
+  background:var(--card);border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink);transition:transform .12s, box-shadow .12s, background .2s, opacity .2s;white-space:nowrap;line-height:1.2}
+.btn:hover{background:var(--gold-pale)}
+.btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--gold-grad);color:var(--ink);border:2px solid var(--gold-deep);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.65),0 5px 0 var(--gold-deep),0 12px 22px rgba(168,132,31,.35);font-weight:800;letter-spacing:.01em}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.primary:active{box-shadow:inset 0 2px 0 rgba(255,255,255,.65),0 1px 0 var(--gold-deep);transform:translateY(4px)}
+.btn.navy{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:0 4px 0 #06102a}
+.btn.danger{border-color:var(--bad);color:var(--bad);box-shadow:0 3px 0 var(--bad)}
+.btn.danger:hover{background:#fde7ec}
+.btn.icon{padding:.55em .8em}
+.pill{display:inline-flex;align-items:center;gap:.4em;padding:.2em .95em;border-radius:999px;background:var(--card);border:2px solid var(--ink);font-weight:800;color:var(--ink)}
+.pill.gold{background:var(--gold-grad);border-color:var(--gold-deep)}
+
+/* ---------- paper pieces ---------- */
+.paper{background:var(--card);border-radius:6px;box-shadow:var(--shadow);position:relative}
+.sticky{position:relative;border-radius:4px 4px 14px 14px / 4px 4px 22px 22px;box-shadow:0 1px 0 rgba(0,0,0,.05),0 12px 20px -8px rgba(92,70,30,.35);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.35),transparent 30%,transparent 80%,rgba(0,0,0,.04))}
+.clip::before{content:'';position:absolute;top:-24px;left:50%;width:34px;height:42px;transform:translateX(-50%);background:var(--clip) center/contain no-repeat;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2));z-index:2}
+.tape::before{content:'';position:absolute;top:-12px;left:50%;width:110px;height:26px;transform:translateX(-50%) rotate(-3deg);background:rgba(251,217,122,.62);border-left:2px dashed rgba(255,255,255,.6);border-right:2px dashed rgba(255,255,255,.6);box-shadow:0 1px 2px rgba(0,0,0,.08);z-index:2}
+.notebook{position:relative;background-color:var(--card);border-radius:10px 14px 14px 10px;box-shadow:var(--shadow);
+  background-image:linear-gradient(90deg,transparent 46px,rgba(232,93,138,.35) 46px 48px,transparent 48px),repeating-linear-gradient(180deg,transparent 0 33px,var(--lined) 33px 35px);background-position:0 18px}
+.notebook::before{content:'';position:absolute;left:-12px;top:14px;bottom:14px;width:26px;
+  background:radial-gradient(circle at 18px 50%,#7a7266 0 4px,transparent 4.5px) 0 0/26px 26px repeat-y,
+             linear-gradient(90deg,transparent 0 4px,transparent 4px) ;}
+.notebook::after{content:'';position:absolute;left:-16px;top:12px;bottom:12px;width:24px;
+  background:repeating-linear-gradient(180deg,transparent 0 6px,#3b3f4a 6px 9px,#8a8f99 9px 11px,transparent 11px 26px);border-radius:8px;opacity:.85}
+.brush{display:inline-block;background:var(--ink);color:#fff;padding:.4em 1.6em;border-radius:999px;font-family:var(--font);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:.9em}
+.highlight{display:inline-block;border-top:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);padding:.25em 1.4em;font-family:var(--hand);font-style:italic;font-weight:700;color:var(--ink)}
+.highlight b{color:var(--gold-deep);opacity:1!important}
+.marker{background:linear-gradient(transparent 88%,var(--gold) 88% 96%,transparent 96%);padding:0 .1em}
+
+/* ---------- 3D title: chunky, extruded, white-outlined, glossy (like the poster) ---------- */
+@font-face{font-family:'CL Black';src:url('/fonts/Inter-Black.otf') format('opentype');font-weight:400 900;font-display:swap}
+.title3d{font-family:var(--display);font-weight:400;line-height:.92;display:flex;flex-direction:column;align-items:center;margin:0;gap:.02em}
+.fx3d{position:relative;display:inline-block;font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.01em;line-height:1;white-space:nowrap}
+.fx3d::after{content:attr(data-text);position:absolute;inset:0;pointer-events:none;text-shadow:none;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.fx3d.navy{color:#13254f;text-shadow:
+  0 .016em 0 #1b3368,0 .032em 0 #0f2049,0 .048em 0 #0d1b3e,0 .064em 0 #0b1734,0 .08em 0 #09132b,0 .096em 0 #070f23,
+  .065em 0 0 #fff,-.065em 0 0 #fff,0 -.065em 0 #fff,.05em .05em 0 #fff,-.05em .05em 0 #fff,.05em -.05em 0 #fff,-.05em -.05em 0 #fff,
+  .065em .096em 0 #fff,-.065em .096em 0 #fff,.05em .146em 0 #fff,-.05em .146em 0 #fff,0 .161em 0 #fff,
+  0 .18em .02em rgba(92,70,30,.22),0 .26em .3em rgba(92,70,30,.32)}
+.fx3d.navy::after{background-image:linear-gradient(180deg,rgba(255,255,255,.55) 0,rgba(255,255,255,.08) 22%,transparent 30%),linear-gradient(180deg,#4a6fc0 0%,#24448c 28%,#13254f 62%,#0a1838 100%)}
+.fx3d.gold{color:#c99a2a;text-shadow:
+  0 .016em 0 #c5992c,0 .032em 0 #b68c25,0 .048em 0 #a37d1f,0 .064em 0 #8f6c19,0 .08em 0 #7b5d14,0 .096em 0 #684e10,
+  .065em 0 0 #fff,-.065em 0 0 #fff,0 -.065em 0 #fff,.05em .05em 0 #fff,-.05em .05em 0 #fff,.05em -.05em 0 #fff,-.05em -.05em 0 #fff,
+  .065em .096em 0 #fff,-.065em .096em 0 #fff,.05em .146em 0 #fff,-.05em .146em 0 #fff,0 .161em 0 #fff,
+  0 .18em .02em rgba(92,70,30,.22),0 .26em .3em rgba(92,70,30,.32)}
+.fx3d.gold::after{background-image:linear-gradient(180deg,rgba(255,255,255,.7) 0,rgba(255,255,255,.12) 22%,transparent 30%),linear-gradient(180deg,#fff6cf 0%,#f6dc84 26%,#e6c35a 50%,#cfa23a 76%,#a8841f 100%)}
+/* "Class Live" title: elegant serif italic (Lora, bundled — works offline) */
+@font-face{font-family:'CL Title';src:url('/fonts/Lora-Italic-Variable.ttf') format('truetype');font-weight:400 700;font-style:italic;font-display:swap}
+.fx3d.serif{font-family:'CL Title',Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;text-transform:none;letter-spacing:-.005em;padding:0 .09em;line-height:1.02}
+.title3d .fx3d.serif + .fx3d.serif{margin-top:-.08em}
+.fx3d.sm{text-shadow:0 .03em 0 #0f2049,0 .06em 0 #09132b,.06em 0 0 #fff,-.06em 0 0 #fff,0 -.06em 0 #fff,0 .12em 0 #fff,.05em .09em 0 #fff,-.05em .09em 0 #fff,0 .16em .2em rgba(92,70,30,.3)}
+.fx3d.gold.sm{text-shadow:0 .03em 0 #a37d1f,0 .06em 0 #7b5d14,.06em 0 0 #fff,-.06em 0 0 #fff,0 -.06em 0 #fff,0 .12em 0 #fff,.05em .09em 0 #fff,-.05em .09em 0 #fff,0 .16em .2em rgba(92,70,30,.3)}
+
+/* ---------- the teacher's real signature (image) ---------- */
+.signature{display:inline-block;line-height:0}
+.signature img{height:100%;width:auto;display:block}
+.signature.top{height:3.3em}
+.signature.foot{height:4.2rem;opacity:.95}
+
+/* ---------- answer shapes & sticky colours ---------- */
+.shape{display:inline-block;width:1em;height:1em;flex:none}
+.shape.s0{clip-path:polygon(50% 6%,96% 92%,4% 92%);background:var(--ink)}
+.shape.s1{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:var(--ink)}
+.shape.s2{border-radius:50%;background:var(--ink)}
+.shape.s3{border-radius:3px;background:var(--ink);transform:scale(.86)}
+.c0{background-color:var(--a0)} .c1{background-color:var(--a1)} .c2{background-color:var(--a2)} .c3{background-color:var(--a3)}
+.c0,.c1,.c2,.c3{color:var(--ink);background-image:linear-gradient(180deg,rgba(255,255,255,.4),transparent 35%,transparent 85%,rgba(0,0,0,.05))}
+
+/* ---------- doodle layer ---------- */
+.doodles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.doodles .d{position:absolute;transition:opacity .5s}
+.doodles svg{width:100%;height:100%;display:block}
+.d-plane{top:8.5%;left:2.5%;width:clamp(60px,6vw,120px);transform:rotate(-8deg)}
+.d-trail{top:15%;left:6.5%;width:clamp(70px,7vw,150px);opacity:.75}
+.d-s1{top:4%;left:58%;width:clamp(22px,2vw,40px);transform:rotate(12deg)}
+.d-s2{top:32%;left:2.5%;width:clamp(20px,1.8vw,34px)}
+.d-s3{top:64%;right:2%;width:clamp(20px,1.8vw,34px)}
+.d-s4{top:52%;right:5%;width:clamp(20px,2vw,38px);transform:rotate(-10deg)}
+.d-bulb{top:36%;right:3.5%;width:clamp(40px,3.6vw,70px)}
+.d-sky{bottom:calc(var(--footer,0px) + 1.5%);right:1.5%;width:clamp(140px,12vw,250px);rotate:2deg}
+.d-cup{bottom:calc(var(--footer,0px) + 1.5%);left:1.5%;width:clamp(120px,10vw,190px)}
+.d-cup .pencils{width:78%;margin:0 auto -6%;position:relative;z-index:0}
+.d-cup .cupbody{position:relative;z-index:1;background:linear-gradient(90deg,#f6efe2,#fffdf7 40%,#efe5d2);border-top:9px solid #d4af37;border-bottom:7px solid #d4af37;border-radius:4px 4px 16px 16px;
+  padding:.6em .5em .7em;font-family:var(--hand);font-weight:700;color:var(--ink);font-size:clamp(14px,1.15vw,22px);line-height:1.08;box-shadow:var(--shadow);text-align:left;padding-left:.8em}
+.d-cup .hrt{color:#e85d8a;margin-left:.2em}
+.d-note{top:11%;right:1.6%;width:clamp(150px,12vw,230px);background:var(--n-pink);padding:.7em .8em;transform:rotate(4deg);font-family:var(--hand);font-weight:700;color:var(--ink);font-size:clamp(15px,1.2vw,22px);line-height:1.12;
+  box-shadow:0 10px 18px -6px rgba(92,70,30,.35);border-radius:3px 3px 12px 3px}
+.d-note span{color:#c8325f}
+/* quieter during play so students focus on the question */
+body[data-phase="ready"] .doodles .d:not(.d-plane):not(.d-s1),body[data-phase="question"] .doodles .d:not(.d-plane):not(.d-s1),
+body[data-phase="reveal"] .doodles .d:not(.d-plane):not(.d-s1){opacity:0}
+body[data-phase="leaderboard"] .d-cup,body[data-phase="leaderboard"] .d-note{opacity:0}
+@media (max-width:1100px){.d-cup,.d-note,.d-trail{display:none}}
+@media (max-width:700px){.d-sky,.d-bulb{display:none}}
+
+/* ---------- feedback ---------- */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:.7em 1.3em;border-radius:14px;font-weight:700;
+  box-shadow:var(--lift);opacity:0;transition:.25s;z-index:999;max-width:90vw;text-align:center;border-bottom:3px solid var(--gold)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.netbar{position:fixed;top:0;left:0;right:0;z-index:998;background:var(--ink);color:var(--gold-light);text-align:center;font-weight:800;padding:.4em;transform:translateY(-100%);transition:.3s}
+.netbar.show{transform:none}
+@keyframes pop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+@keyframes rise{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.rise{animation:rise .45s cubic-bezier(.2,.9,.3,1.2) both}
+.shine{position:relative;overflow:hidden}
+.shine::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,250,225,.7) 50%,transparent 70%);background-size:200% 100%;animation:shimmer 2.8s infinite;pointer-events:none;border-radius:inherit}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+[dir=auto]{unicode-bidi:plaintext}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}

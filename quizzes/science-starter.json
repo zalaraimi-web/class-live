@@ -1,0 +1,13 @@
+{
+  "title": "Science Starter",
+  "questions": [
+    { "text": "Which planet is closest to the Sun?", "options": ["Mercury", "Venus", "Earth", "Mars"], "correct": [0], "time": 20 },
+    { "text": "What gas do plants absorb from the air for photosynthesis?", "options": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], "correct": [1], "time": 20 },
+    { "text": "Water boils at 100 °C at sea level.", "options": ["True", "False"], "correct": [0], "time": 15 },
+    { "text": "Which part of the cell contains the genetic material (DNA)?", "options": ["Cell membrane", "Cytoplasm", "Nucleus", "Cell wall"], "correct": [2], "time": 20 },
+    { "text": "What is the chemical symbol for gold?", "options": ["Go", "Gd", "Ag", "Au"], "correct": [3], "time": 20, "points": 2 },
+    { "text": "Which of these is a renewable source of energy?", "options": ["Coal", "Solar", "Natural gas", "Oil"], "correct": [1], "time": 15 },
+    { "text": "How many bones are in the adult human body?", "options": ["106", "206", "306", "406"], "correct": [1], "time": 20 },
+    { "text": "Sound travels faster in air than in water.", "options": ["True", "False"], "correct": [1], "time": 15 }
+  ]
+}

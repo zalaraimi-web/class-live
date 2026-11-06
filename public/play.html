@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#081631">
+<title>Class Live · Join</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+<link rel="stylesheet" href="/common.css">
+<style>
+  body{min-height:100dvh;display:flex;flex-direction:column;font-size:17px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+  header.top,main{position:relative;z-index:1}
+  header.top{display:flex;align-items:center;gap:.6rem;padding:calc(.55rem + env(safe-area-inset-top)) 1rem .55rem;background:var(--ink);color:#fff;border-bottom:4px solid var(--gold)}
+  .me{display:flex;align-items:center;gap:.4rem;font-weight:800;min-width:0;flex:1}
+  .me .av{font-size:1.6rem}
+  .me .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .score{background:var(--gold-grad);color:var(--ink);font-family:var(--display);border-radius:999px;padding:.05em .8em;font-size:1.15rem;border:2px solid var(--gold-deep)}
+  main{flex:1;display:flex;flex-direction:column;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom));min-height:0}
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem}
+  h1{font-family:var(--display);font-weight:400;font-size:2.1rem;line-height:1.1;color:var(--ink)}
+  .crownmini{width:96px;margin-bottom:-14px;animation:sway 4s ease-in-out infinite;transform-origin:50% 100%}
+  .title3d{font-size:4.2rem;margin-bottom:.3em}
+  .card{background:var(--card);border-radius:8px;padding:1.4rem 1.2rem;width:100%;max-width:440px;box-shadow:var(--shadow);position:relative}
+  .field{width:100%;border:2.5px solid var(--ink);border-radius:12px;padding:.6em .8em;font-size:1.6rem;font-weight:800;text-align:center;background:#fff;color:var(--ink);outline:none}
+  .field:focus{box-shadow:0 0 0 4px rgba(212,175,55,.5);border-color:var(--gold-deep)}
+  .field.pin{letter-spacing:.25em;font-size:2.2rem;font-family:var(--display)}
+  .go{width:100%;margin-top:.9rem;font-size:1.4rem;padding:.65em}
+  .err{color:var(--bad);font-weight:700;min-height:1.5em;margin-top:.5rem}
+  .avatars{display:grid;grid-template-columns:repeat(6,1fr);gap:.45rem;margin-top:.5rem}
+  .avatars button{font-size:1.85rem;aspect-ratio:1;border-radius:6px 6px 12px 6px;line-height:1;box-shadow:0 4px 6px -3px rgba(92,70,30,.35);transition:transform .15s}
+  .avatars button:nth-child(5n+1){background:var(--n-pink)}.avatars button:nth-child(5n+2){background:var(--n-blue)}.avatars button:nth-child(5n+3){background:var(--n-yellow)}.avatars button:nth-child(5n+4){background:var(--n-green)}.avatars button:nth-child(5n+5){background:var(--n-lilac)}
+  .avatars button.on{transform:scale(1.12) rotate(-4deg);box-shadow:0 0 0 3px var(--gold),0 0 0 5px #fff,0 8px 14px rgba(0,0,0,.2)}
+  .lbl{font-family:var(--hand);font-style:italic;font-weight:700;font-size:1.25rem;margin-bottom:.3rem;text-align:left;color:var(--ink)}
+  .bigav{font-size:6rem;line-height:1;animation:floaty 2.2s infinite}
+  .muted{color:var(--muted);font-weight:600}
+  .qno{font-family:var(--hand);font-style:italic;font-weight:700;font-size:1.5rem;color:var(--ink)}
+  .qtext{background:var(--card);color:var(--ink);border-radius:6px;padding:.8rem 1rem;font-weight:800;font-size:1.25rem;line-height:1.25;text-align:center;width:100%;box-shadow:var(--shadow);border-bottom:4px solid var(--gold)}
+  .timer{height:12px;border-radius:99px;background:#fff;border:2px solid var(--ink);overflow:hidden;margin:.75rem 0 .3rem}
+  .timer i{display:block;height:100%;background:var(--gold-grad);transition:background .3s}
+  .tinfo{display:flex;justify-content:space-between;font-weight:800;font-size:.95rem;margin-bottom:.8rem}
+  .answers{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:.8rem;min-height:0}
+  .answers.two{grid-template-columns:1fr}
+  .ans{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;border-radius:4px 4px 16px 16px / 4px 4px 24px 24px;padding:.8rem;font-weight:800;font-size:1.25rem;line-height:1.2;
+    box-shadow:0 10px 14px -8px rgba(92,70,30,.55);min-height:90px;transition:transform .1s,opacity .3s;word-break:break-word}
+  .ans:nth-child(1){rotate:-.8deg}.ans:nth-child(2){rotate:.8deg}.ans:nth-child(3){rotate:.6deg}.ans:nth-child(4){rotate:-.6deg}
+  .ans .shape{width:1.6em;height:1.6em}
+  .ans:active{transform:translateY(4px) scale(.98)}
+  .ans.picked{box-shadow:0 0 0 4px var(--gold),0 0 0 7px #fff,0 12px 22px rgba(168,132,31,.5)}
+  .ans.faded{opacity:.25}
+  .result{flex:1;margin:-1rem;padding:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.8rem;position:relative}
+  .result .notecard{background:var(--card);padding:2rem 1.4rem 1.6rem;width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:.7rem;box-shadow:var(--lift);border-radius:6px;position:relative}
+  .result.good .notecard{background:var(--n-green);rotate:-1.5deg}
+  .result.bad .notecard{background:var(--n-pink);rotate:1.5deg}
+  .result.none .notecard{background:var(--n-blue);rotate:-1deg}
+  .result .icon{font-size:4.6rem;line-height:1;animation:pop .5s both}
+  .result.bad .icon{animation:shake .5s both}
+  .result h1{font-size:2.6rem}
+  .result .pts{font-family:var(--display);font-size:2rem;background:var(--gold-grad);color:var(--ink);border:2px solid var(--gold-deep);border-radius:999px;padding:.05em 1em;box-shadow:0 4px 0 var(--gold-deep)}
+  .result.bad .pts{background:#fff;border-color:var(--ink);box-shadow:0 4px 0 var(--ink)}
+  .result .sub{font-weight:800;font-size:1.1rem;color:var(--ink)}
+  .streak{font-family:var(--hand);font-style:italic;font-weight:700;color:#c2410c;font-size:1.35rem}
+  .rankbig{font-family:var(--display);font-size:5rem;line-height:1;color:#e2bf55;text-shadow:0 2px 0 #b98f2a,0 4px 0 #94731a,3px 3px 0 #fff,-3px -3px 0 #fff,3px -3px 0 #fff,-3px 3px 0 #fff,0 8px 12px rgba(0,0,0,.18)}
+  .mini{width:100%;max-width:440px;display:flex;flex-direction:column;gap:.5rem}
+  .mini .r{display:flex;align-items:center;gap:.5rem;background:var(--card);border-radius:6px;padding:.4rem .8rem;font-weight:800;box-shadow:var(--shadow);border-left:8px solid var(--n-blue)}
+  .mini .r:first-child{border-left-color:var(--gold);background:var(--gold-pale)}
+  .mini .r.mine{box-shadow:var(--glow)}
+  .mini .r > span:first-child{font-family:var(--display);min-width:1.2em}
+  .mini .r .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+  .waitdots i{display:inline-block;width:.6em;height:.6em;border-radius:50%;background:var(--gold);margin:0 .15em;animation:floaty 1.1s infinite}
+  .waitdots i:nth-child(2){animation-delay:.15s}.waitdots i:nth-child(3){animation-delay:.3s}
+  .paused{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(5px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;z-index:40;font-family:var(--display);font-size:2.6rem;text-align:center;padding:1rem;color:var(--ink)}
+  .paused small{font-family:var(--hand);font-style:italic;font-size:1.3rem;color:var(--ink);font-weight:700}
+  .medal{font-size:6rem;line-height:1;animation:pop .6s both}
+  .stats{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+  .stats .pill{font-size:1rem}
+  .linkbtn{color:var(--ink);text-decoration:underline;font-weight:700}
+  .joinnote{font-family:var(--hand);font-style:italic;font-weight:700;font-size:1.3rem}
+  .signature.foot{margin-top:.6rem}
+  .certbtn{margin-top:.4rem}
+  .why{background:rgba(255,255,255,.75);border-radius:10px;border-left:5px solid var(--gold);padding:.6rem .8rem;text-align:left;font-weight:600;font-size:1rem;line-height:1.35;color:var(--ink);width:100%}
+  .why b{display:block;font-family:var(--hand);font-style:italic;color:var(--gold-deep);font-size:1.1rem}
+</style>
+</head>
+<body>
+<div class="netbar" id="netbar">📶 Connection lost — reconnecting… your score is safe</div>
+<div id="doodles"></div>
+<header class="top hidden" id="top"><div class="me" id="me"></div><span class="score" id="score">0</span></header>
+<main id="app"></main>
+
+<script src="/common.js"></script>
+<script src="/brand.js"></script>
+<script>
+'use strict';
+const KEY = 'classlive.player';
+const app = $('#app');
+const params = new URLSearchParams(location.search);
+let me = store.get(KEY), S = null, conn = null, viewKey = '', avatars = [], picked = null, joinPin = '';
+let sending = false, raf = 0, prevScore = 0, soundedQ = '';
+sfx.on = true;
+$('#doodles').outerHTML = doodleLayer();
+const setPhase = ph => { document.body.dataset.phase = ph; };
+
+/* ---------------- join flow ---------------- */
+async function showPin(msg) {
+  conn?.close(); conn = null; viewKey = 'pin'; $('#top').classList.add('hidden'); setPhase('join');
+  app.innerHTML = `<div class="center rise">
+    <div class="crownmini">${ART.crown}</div>${title3D()}
+    <div class="brush" style="font-size:.85rem">${esc(BRAND.subtitle)}</div>
+    <div class="card sticky clip" style="background:var(--n-yellow)"><form id="f" autocomplete="off">
+      <input class="field pin" id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Game PIN" aria-label="Game PIN" value="${esc(joinPin)}">
+      <button class="btn primary go" type="submit">Enter</button>
+      <div class="err" id="err">${esc(msg || '')}</div></form></div>
+    <div class="joinnote">The PIN is on the classroom board</div>${signatureHTML('foot')}</div>`;
+  const inp = $('#pin'); inp.focus();
+  inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); });
+  $('#f').onsubmit = async e => {
+    e.preventDefault(); const pin = inp.value.trim();
+    if (pin.length !== 6) return $('#err').textContent = 'The PIN has 6 digits';
+    await checkPin(pin);
+  };
+}
+async function checkPin(pin) {
+  try {
+    const r = await fetch('/api/check?pin=' + encodeURIComponent(pin)); const d = await r.json();
+    if (!r.ok) throw new Error(d.error);
+    if (d.locked) throw new Error('The teacher has locked this game');
+    if (d.phase === 'final') throw new Error('This game has finished');
+    joinPin = pin; showName(d.title);
+  } catch (e) { joinPin = pin; showPin(e.message || 'Could not reach the game. Check your Wi-Fi.'); }
+}
+async function showName(title) {
+  viewKey = 'name';
+  if (!avatars.length) { try { avatars = (await (await fetch('/api/info')).json()).avatars; } catch { avatars = ['🦊', '🐼', '🐨', '🦁', '🐯', '🐸', '🐵', '🦄', '🐙', '🦋', '🐢', '🐬']; } }
+  picked = picked || avatars[Math.random() * avatars.length | 0];
+  const lastName = store.get('classlive.lastname') || '';
+  app.innerHTML = `<div class="center rise">
+    <div class="joinnote" dir="auto">Joining <span class="marker">${esc(title)}</span></div>
+    <div class="card" style="border-top:4px solid var(--ink)"><form id="f" autocomplete="off">
+      <div class="lbl">Your name</div>
+      <input class="field" id="nm" maxlength="20" placeholder="Type your name" dir="auto" value="${esc(lastName)}" aria-label="Your name">
+      <div class="lbl" style="margin-top:1rem">Pick your avatar</div>
+      <div class="avatars" id="avs">${avatars.map(a => `<button type="button" class="${a === picked ? 'on' : ''}" data-a="${a}" aria-label="Avatar ${a}">${a}</button>`).join('')}</div>
+      <button class="btn primary go" type="submit" id="go">Let's go! 🚀</button>
+      <div class="err" id="err"></div></form></div>
+    <button class="linkbtn" id="back">Wrong game? Change PIN</button></div>`;
+  $('#avs').onclick = e => { const b = e.target.closest('button'); if (!b) return; picked = b.dataset.a; $$('#avs button').forEach(x => x.classList.toggle('on', x === b)); };
+  $('#back').onclick = () => showPin();
+  if (!lastName) $('#nm').focus();
+  $('#f').onsubmit = async e => {
+    e.preventDefault(); sfx.ac();
+    const name = $('#nm').value.trim(); if (!name) return $('#err').textContent = 'Please type your name';
+    $('#go').disabled = true;
+    try {
+      const r = await post('/api/join', { pin: joinPin, name, avatar: picked }, { retries: 2 });
+      me = { pin: r.pin, pid: r.pid, token: r.token }; store.set(KEY, me); store.set('classlive.lastname', name);
+      history.replaceState(null, '', '/play?pin=' + r.pin);
+      startLive();
+    } catch (er) { $('#err').textContent = er.message; $('#go').disabled = false; }
+  };
+}
+
+/* ---------------- live ---------------- */
+function startLive() {
+  conn?.close();
+  app.innerHTML = `<div class="center"><div class="waitdots"><i></i><i></i><i></i></div><div class="muted">Connecting…</div></div>`;
+  conn = connect(`/api/events?role=player&pin=${me.pin}&pid=${me.pid}&token=${me.token}`, {
+    state: onState,
+    invalid: () => { store.del(KEY); me = null; joinPin = ''; showPin('That game has ended. Enter a new PIN.'); },
+    kicked: () => { store.del(KEY); me = null; showMessage('👋', 'You were removed from the game', 'Ask your teacher, then join again.'); },
+    closed: () => { store.del(KEY); me = null; showMessage('👏', 'Thanks for playing!', 'The teacher closed this game.'); },
+  }, ok => $('#netbar').classList.toggle('show', !ok));
+}
+function showMessage(icon, title, sub) {
+  stopLoop(); $('#top').classList.add('hidden'); $('#pausedOv')?.remove(); viewKey = 'msg';
+  app.innerHTML = `<div class="center rise"><div class="bigav">${icon}</div><h1>${esc(title)}</h1><div class="muted">${esc(sub)}</div><button class="btn primary" onclick="joinPin='';showPin()">Join a game</button></div>`;
+}
+
+function onState(st) {
+  S = st; clock.sync(st.serverNow); setPhase(st.phase);
+  $('#top').classList.remove('hidden');
+  $('#me').innerHTML = `<span class="av">${esc(st.me.avatar)}</span><span class="nm" dir="auto">${esc(st.me.name)}</span>`;
+  const sc = $('#score'); sc.textContent = fmt(st.me.score);
+  if (st.me.score > prevScore) { sc.animate([{ transform: 'scale(1.35)' }, { transform: 'scale(1)' }], { duration: 400 }); }
+  prevScore = st.me.score;
+  const ans = st.me.answer;
+  const key = `${st.phase}:${st.qIndex}:${st.round}:${ans ? (ans.correct === undefined ? 'a' : 'f') : '-'}`;
+  const fresh = key !== viewKey; viewKey = key;
+  ({ lobby: vLobby, ready: vReady, question: vQuestion, reveal: vReveal, leaderboard: vBoard, final: vFinal })[st.phase](fresh);
+  renderPause();
+}
+
+function vLobby(fresh) {
+  stopLoop();
+  if (fresh) app.innerHTML = `<div class="center rise"><div class="bigav">${esc(S.me.avatar)}</div><h1>You're in!</h1>
+    <div class="muted" style="font-size:1.15rem">Can you see your name on the board?</div>
+    <div class="pill" id="pcount"></div><div class="muted">Waiting for the teacher to start…</div></div>`;
+  $('#pcount').textContent = `👥 ${S.playerCount} player${S.playerCount === 1 ? '' : 's'} joined`;
+}
+
+function vReady(fresh) {
+  if (fresh) app.innerHTML = `<div class="center"><div class="qno">Question ${S.qIndex + 1} of ${S.total}</div>
+    ${S.question.points === 2 ? '<div class="pill">⚡ Double points!</div>' : ''}
+    <div class="qtext rise" dir="auto">${esc(S.question.text)}</div><h1 id="getset">Get ready…</h1>
+    <div class="timer" style="width:80%"><i id="tb" style="width:100%"></i></div></div>`;
+  loop(() => { const t = timeLeft(S.timer), tb = $('#tb'); if (tb) tb.style.width = (t / S.timer.duration * 100) + '%'; });
+}
+
+function vQuestion(fresh) {
+  const q = S.question, ans = S.me.answer;
+  if (ans) return ans.correct === undefined ? vLocked(fresh, ans) : vResult(fresh, ans, false);
+  if (fresh) {
+    sending = false;
+    app.innerHTML = `<div class="qtext" dir="auto">${esc(q.text)}</div>
+      <div class="timer"><i id="tb"></i></div><div class="tinfo"><span id="secs"></span><span id="acount"></span></div>
+      <div class="answers ${q.options.length === 2 ? 'two' : ''}">${q.options.map((o, i) =>
+        `<button class="ans c${i}" data-i="${i}">${shape(i)}<span dir="auto">${esc(o)}</span></button>`).join('')}</div>`;
+    $('.answers').onclick = e => { const b = e.target.closest('.ans'); if (b) answer(+b.dataset.i, b); };
+  }
+  $('#acount').textContent = `${S.answeredCount}/${S.playerCount} answered`;
+  loop(() => {
+    const t = timeLeft(S.timer), tb = $('#tb'); if (!tb) return;
+    tb.style.width = (t / S.timer.duration * 100) + '%'; tb.style.background = t < 5000 ? '#ff7a85' : '';
+    $('#secs').textContent = `⏱ ${Math.ceil(t / 1000)} s`;
+  });
+}
+async function answer(i, btn) {
+  if (sending || S.timer.paused) return;
+  sending = true; sfx.ac();
+  $$('.ans').forEach(b => b.classList.toggle(b === btn ? 'picked' : 'faded', true));
+  navigator.vibrate?.(30);
+  const qIndex = S.qIndex;
+  try {
+    const r = await post('/api/answer', { pin: me.pin, pid: me.pid, token: me.token, qIndex, choice: i }, { retries: 4 });
+    if (S.phase === 'question' && S.qIndex === qIndex && !S.me.answer) { S.me.answer = r.answer; if (r.explain && S.question) S.question = { ...S.question, explain: r.explain }; onState(S); }
+  } catch (e) {
+    toast(e.status ? e.message : 'Could not send — check your Wi-Fi and tap again');
+    sending = false; $$('.ans').forEach(b => b.classList.remove('picked', 'faded'));
+  }
+}
+function vLocked(fresh, ans) {
+  if (fresh) app.innerHTML = `<div class="center rise"><div class="ans c${ans.choice}" style="width:120px;height:120px;min-height:0;border-radius:28px">${shape(ans.choice)}</div>
+    <h1>Answer locked in!</h1><div class="waitdots"><i></i><i></i><i></i></div><div class="muted" id="wait"></div></div>`;
+  $('#wait').textContent = `${S.answeredCount}/${S.playerCount} answered · waiting for the others`;
+  stopLoop();
+}
+function vResult(fresh, ans, revealed) {
+  stopLoop();
+  if (!fresh) { const w = $('#wait'); if (w) w.textContent = `${S.answeredCount}/${S.playerCount} answered`; return; }
+  const ok = ans?.correct, none = !ans;
+  const sk = S.qIndex + ':' + S.round;
+  if (soundedQ !== sk) { soundedQ = sk; if (ok) { sfx.correct(); navigator.vibrate?.([40, 40, 40]); } else if (!none) { sfx.wrong(); navigator.vibrate?.(200); } }
+  const q = S.question;
+  const rightTxt = revealed && q.correct && !ok ? `<div class="sub" dir="auto">Correct answer: ${q.correct.map(i => esc(q.options[i])).join(' / ')}</div>` : '';
+  const behind = S.me.behind ? `<div class="sub" dir="auto">${S.me.behind.by === 0 ? 'Tied with' : fmt(S.me.behind.by) + ' points behind'} ${esc(S.me.behind.name)}</div>` : (S.me.rank === 1 ? '<div class="sub">👑 You\'re in the lead!</div>' : '');
+  app.innerHTML = `<div class="result ${none ? 'none' : ok ? 'good' : 'bad'}"><div class="notecard sticky clip">
+    <div class="icon">${none ? '⏰' : ok ? '✅' : '❌'}</div>
+    <h1>${none ? 'Time\'s up!' : ok ? pick(['Correct!', 'Brilliant!', 'Great job!', 'Nailed it!']) : pick(['Not quite!', 'So close!', 'Next one!'])}</h1>
+    ${none ? '' : `<div class="pts">+${fmt(ans.points)}</div>`}
+    ${ok && S.me.streak >= 2 ? `<div class="streak">🔥 Answer streak: ${S.me.streak}</div>` : ''}
+    ${rightTxt}
+    ${q.explain ? `<div class="why"><b>Why?</b><span dir="auto">${esc(q.explain)}</span></div>` : ''}
+    ${revealed ? `<div class="sub">You're in ${ordinal(S.me.rank)} place</div>${behind}` : `<div class="sub muted" id="wait">${S.answeredCount}/${S.playerCount} answered</div>`}
+  </div></div>`;
+}
+const pick = a => a[Math.random() * a.length | 0];
+
+function vReveal(fresh) { vResult(fresh, S.me.answer, true); }
+
+function vBoard(fresh) {
+  stopLoop(); if (!fresh) return;
+  const mv = S.me.prevRank ? S.me.prevRank - S.me.rank : 0;
+  app.innerHTML = `<div class="center rise">
+    <div class="muted">After question ${S.qIndex + 1}</div>
+    <div class="rankbig">${ordinal(S.me.rank)}</div>
+    <div class="muted">of ${S.playerCount} · ${fmt(S.me.score)} points ${mv > 0 ? `<b style="color:#4ade80">▲ up ${mv}</b>` : ''}</div>
+    <div class="mini">${(S.top || []).map(t => `<div class="r ${t.name === S.me.name ? 'mine' : ''}"><span>${t.rank}</span><span>${esc(t.avatar)}</span><span class="n" dir="auto">${esc(t.name)}</span><span>${fmt(t.score)}</span></div>`).join('')}</div>
+    <div class="muted">Look at the board! 👀</div></div>`;
+}
+
+function vFinal(fresh) {
+  stopLoop(); if (!fresh) return;
+  const r = S.me.rank, medal = ['🥇', '🥈', '🥉'][r - 1];
+  app.innerHTML = `<div class="center rise">
+    ${medal ? `<div class="medal">${medal}</div>` : `<div class="bigav">${esc(S.me.avatar)}</div>`}
+    <h1>${r === 1 ? 'You won! 🎉' : medal ? 'On the podium!' : 'Well played!'}</h1>
+    <div class="rankbig">${ordinal(r)}</div><div class="muted">out of ${S.playerCount} · ${fmt(S.me.score)} points</div>
+    <div class="stats"><span class="pill">✅ ${S.me.correctCount}/${S.total} correct</span><span class="pill">🔥 Best streak ${S.me.bestStreak}</span></div>
+    <button class="btn primary certbtn" id="myCert">🏅 My certificate</button></div>`;
+  $('#myCert').onclick = () => openCertificates([{ name: S.me.name, avatar: S.me.avatar, rank: r, score: S.me.score, correct: S.me.correctCount, bestStreak: S.me.bestStreak }],
+    { title: S.title, total: S.total, players: S.playerCount });
+  if (medal) { confetti(5000); sfx.fanfare(); }
+}
+
+function renderPause() {
+  let ov = $('#pausedOv');
+  const show = S && S.timer.paused && ['ready', 'question'].includes(S.phase);
+  if (!show) return ov?.remove();
+  if (!ov) { ov = document.createElement('div'); ov.id = 'pausedOv'; ov.className = 'paused'; ov.innerHTML = '<div>⏸</div><div>Paused</div><small>Eyes on your teacher!</small>'; document.body.append(ov); }
+}
+
+let loopFn = null;
+function loop(fn) { loopFn = fn; if (!raf) { const t = () => { loopFn?.(); raf = requestAnimationFrame(t); }; raf = requestAnimationFrame(t); } }
+function stopLoop() { cancelAnimationFrame(raf); raf = 0; loopFn = null; }
+
+/* ---------------- boot ---------------- */
+const urlPin = (params.get('pin') || '').replace(/\D/g, '').slice(0, 6);
+if (me && (!urlPin || urlPin === me.pin)) startLive();
+else if (urlPin.length === 6) { store.del(KEY); me = null; checkPin(urlPin); }
+else showPin();
+</script>
+</body>
+</html>

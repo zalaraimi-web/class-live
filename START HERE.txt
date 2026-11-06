@@ -1,0 +1,28 @@
+CLASS LIVE — HOW TO START (Mac)
+================================
+
+1. Double-click  "Start Class Live.command"
+   • The very first time, it downloads its game engine once (about 1 minute, needs internet).
+     After that it starts in a few seconds, even without internet.
+   • The teacher board opens in your browser automatically.
+   • Keep the small Terminal window open during the lesson. Close it to stop the game.
+
+2. Students connect their phones/iPads to the SAME Wi-Fi as your Mac,
+   then scan the QR code on the board (or type the address shown under "Go to").
+
+FIRST TIME ONLY — if macOS blocks the file
+------------------------------------------
+• If you see "Apple could not verify…" or "cannot be opened":
+  open System Settings → Privacy & Security → scroll down → click "Open Anyway"
+  next to "Start Class Live.command", then double-click it again.
+• If macOS asks "Do you want the application node to accept incoming network
+  connections?" → click ALLOW (this is how students' devices connect).
+
+IF STUDENTS CAN'T CONNECT
+-------------------------
+• Check the Mac and the phones are on the same Wi-Fi network.
+• Some school networks block devices from seeing each other. In that case use a
+  personal hotspot for small groups, or put the game online (see README.md).
+
+Tips: plug in the charger (the Mac stays awake while the game runs).
+Double-clicking again while it is running just reopens the teacher board.

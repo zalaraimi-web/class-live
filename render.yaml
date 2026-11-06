@@ -1,0 +1,12 @@
+# One-click setup for Render (render.com → New → Blueprint → pick this repository).
+services:
+  - type: web
+    name: class-live
+    runtime: node
+    plan: free
+    buildCommand: echo "No build needed"
+    startCommand: node server.js
+    healthCheckPath: /api/info
+    envVars:
+      - key: TEACHER_PASSWORD
+        sync: false   # Render asks you to type your teacher password during setup
